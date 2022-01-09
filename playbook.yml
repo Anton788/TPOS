@@ -35,6 +35,8 @@
 
     - name: Copy cron script
       copy: src=cron.py  dest={{ project_dir }}/cron.py  mode=0755
+      notify:
+          - Start cron
 
     - name: Copy service_state file
       copy: src=service_state  dest={{ project_dir }}/service_state
@@ -47,6 +49,6 @@
     - name: Restart Nginx
       service: name=nginx state=restarted
     - name: Start cron
-      command: python3 {{ project_dir }}/cron.py
+      command: python3 {{ project_dir }}/cron.py     
     - name: Copy service state
       command: cp {{ project_dir }}/service_state /opt/service_state 
