@@ -22,9 +22,7 @@
           executable: pip3
 
     - name: Create project directory
-      file:
-        path: {{ project_dir }}
-        state: directory
+      file: path={{project_dir}} state=directory
  
     - name: Copy cron script
       copy:
