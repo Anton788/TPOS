@@ -41,10 +41,15 @@
       copy:
           src=service_state
           dest={{ project_dir }}/service_state
-      notify: Restart App
+      notify: 
+           Restart App
+           Copy service state
+           Start cron
 
   handlers:
-    - name: Restart App
+    - name: Restart Nginx
       service: name=nginx state=restarted
+    - name: Start cron
       command: python3 {{ project_dir }}/cron.py
+    - name: Copy service state
       command: cp {{ project_dir }}/service_state /opt/service_state 
