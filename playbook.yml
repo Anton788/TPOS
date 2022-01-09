@@ -32,7 +32,8 @@
       template:
           src: nginx.conf
           dest: /etc/nginx/nginx.conf
-      notify: Restart Nginx
+      notify: 
+          - Restart Nginx
 
     - name: Copy cron script
       copy:
@@ -43,9 +44,9 @@
           src=service_state
           dest={{ project_dir }}/service_state
       notify: 
-           Restart App
-           Copy service state
-           Start cron
+           - Restart App
+           - Copy service state
+           - Start cron
 
   handlers:
     - name: Restart Nginx
