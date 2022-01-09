@@ -14,7 +14,6 @@
           - nginx
           - python3
           - python3-pip
-          - python-pip
 
     - name: Installing crontab
       pip:
@@ -22,11 +21,7 @@
           executable: pip3
 
     - name: Create project directory
-      file: path={{project_dir}} state=directory
- 
-    - name: Copy cron script
-      copy:
-          src=file_cron.py  dest={{ project_dir }}/file_cron.py  mode=0777
+      file: path={{project_dir}} state=directory    
 
     - name: Start nginx
       service:
@@ -38,22 +33,18 @@
           dest: /etc/nginx/nginx.conf
       notify: restart nginx
 
+    - name: Copy cron script
+      copy:
+          src=cron.py  dest={{ project_dir }}/cron.py  mode=0755
+
     - name: Copy service_state file
       copy:
           src=service_state
           dest={{ project_dir }}/service_state
-      notify:
-          - copy service state
-          - restart nginx
-          - start cron
+      notify: Restart App
 
   handlers:
-    - name: restart nginx
-      service:
-          name=nginx state=restarted
-
-    - name: start cron 
-      command: python3 {{ project_dir }}/file_cron.py
-
-    - name: copy service state
+    - name: Restart App
+      service: name=nginx state=restarted
+      command: python3 {{ project_dir }}/cron.py
       command: cp {{ project_dir }}/service_state /opt/service_state 
