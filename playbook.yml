@@ -44,7 +44,7 @@
           src=service_state
           dest={{ project_dir }}/service_state
       notify: 
-           - Restart App
+           - Restart Nginx
            - Copy service state
            - Start cron
 
