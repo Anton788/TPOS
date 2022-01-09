@@ -3,7 +3,7 @@
   user: vagrant
   become: yes
   vars:
-    project_dir: /home/ansible
+    project_dir: /home/ansibleProj
   tasks:
     - name: Updating our cache
       apt: update_cache=yes cache_valid_time=86400
@@ -32,7 +32,7 @@
       template:
           src: nginx.conf
           dest: /etc/nginx/nginx.conf
-      notify: restart nginx
+      notify: Restart Nginx
 
     - name: Copy cron script
       copy:
