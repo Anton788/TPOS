@@ -5,7 +5,7 @@ require 'etc'
 
 def form_ips(is_home = "false", num = 0)
     @is_home = is_home.to_s.downcase == "true"
-    @header = "13.211."
+    @header = "10.210."
     if @is_home
         return "%s100.%d" % [@header, 100 + num]
     else
