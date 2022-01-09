@@ -1,0 +1,61 @@
+---
+- hosts: all
+  user: vagrant
+  become: yes
+  vars:
+    project_dir: /home/ansible
+  tasks:
+    - name: Updating our cache
+      apt: update_cache=yes cache_valid_time=86400
+  
+    - name: Install required packages
+      apt:
+        name: 
+          - nginx
+          - python3
+          - python3-pip
+          - python-pip
+
+    - name: Installing crontab
+      pip:
+          name: python-crontab
+          executable: pip3
+
+    - name: Create project directory
+      file:
+        path: {{ project_dir }}
+        state: directory
+ 
+    - name: Copy cron script
+      copy:
+          src=file_cron.py  dest={{ project_dir }}/file_cron.py  mode=0777
+
+    - name: Start nginx
+      service:
+          name=nginx state=started
+
+    - name: Copy nginx config
+      template:
+          src: nginx.conf
+          dest: /etc/nginx/nginx.conf
+      notify: restart nginx
+
+    - name: Copy service_state file
+      copy:
+          src=service_state
+          dest={{ project_dir }}/service_state
+      notify:
+          - copy service state
+          - restart nginx
+          - start cron
+
+  handlers:
+    - name: restart nginx
+      service:
+          name=nginx state=restarted
+
+    - name: start cron 
+      command: python3 {{ project_dir }}/file_cron.py
+
+    - name: copy service state
+      command: cp {{ project_dir }}/service_state /opt/service_state 
